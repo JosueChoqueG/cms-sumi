@@ -27,22 +27,18 @@ jobs:
           npm ci --legacy-peer-deps
           npm run build
 
-      - name: Install PHP and Composer
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          tools: 'composer'
-
-      - name: Install PHP dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+      # ❌ YA NO instalamos Composer aquí (ahorramos tiempo)
+      # El vendor ya está subido manualmente en el hosting
 
       - name: Restructure for Shared Hosting (No Document Root Change)
         run: |
+          # Mover archivos individuales (evitando vendor/)
           mv public/.htaccess .
           mv public/index.php .
           mv public/favicon.ico . 2>/dev/null || true
           mv public/robots.txt . 2>/dev/null || true
           
+          # Mover carpetas de assets si existen
           mv public/build . 2>/dev/null || true
           mv public/assets . 2>/dev/null || true
           mv public/css . 2>/dev/null || true
@@ -50,27 +46,11 @@ jobs:
           mv public/fonts . 2>/dev/null || true
           mv public/images . 2>/dev/null || true
           
+          # Actualizar index.php
           sed -i "s|__DIR__.'/../|__DIR__.'/|g" index.php
+          
+          # Eliminar public/ (ya debería estar vacío o casi vacío)
           rm -rf public/
-
-      - name: Create Unzip Script
-        run: |
-          echo "<?php
-          \$zip = new ZipArchive;
-          if (\$zip->open('deploy.zip') === TRUE) {
-              \$zip->extractTo(__DIR__);
-              \$zip->close();
-              echo 'SUCCESS';
-              unlink('deploy.zip');
-              unlink('unzip.php');
-          } else {
-              echo 'FAILED';
-          }" > unzip.php
-
-      - name: Zip Files for Deployment
-        run: |
-          sudo apt-get update && sudo apt-get install -y zip
-          zip -r deploy.zip . -x ".git/*" ".github/*" "node_modules/*" "tests/*" ".env*" "README.md" "package*.json"
 
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -81,12 +61,27 @@ jobs:
           protocol: ftp
           port: 21
           server-dir: ./
-          dangerous-clean-html: false
+          timeout: 60000
           exclude: |
-            - **
-            - !deploy.zip
-            - !unzip.php
-
-      - name: Trigger Remote Unzip via HTTP
-        run: |
-          curl -s -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://alfredosumi.com
+            - .git*
+            - .git/**
+            - node_modules/**
+            - tests/**
+            - .github/**
+            - .env
+            - .env.*
+            - .vscode/**
+            - README.md
+            - composer.json
+            - composer.lock
+            - package.json
+            - package-lock.json
+            - vite.config.js
+            - tailwind.config.js
+            - postcss.config.js
+            - .editorconfig
+            - .gitignore
+            - .env.example
+            - bootstrap/cache/*.php
+            - storage/logs/**
+            - vendor/**                    # ✅ NUEVO: Excluimos vendor del deploy
