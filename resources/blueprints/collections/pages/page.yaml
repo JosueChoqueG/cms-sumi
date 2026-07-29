@@ -1,0 +1,165 @@
+title: Page
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+          -
+            handle: content
+            field:
+              type: markdown
+              display: Content
+              localizable: true
+              escape_markup: true
+          -
+            handle: author
+            field:
+              type: users
+              display: Author
+              default: current
+              localizable: true
+              max_items: 1
+          -
+            handle: template
+            field:
+              type: template
+              display: Template
+              localizable: true
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'
+          -
+            handle: parent
+            field:
+              collections:
+                - pages
+              type: entries
+              display: parent
+              listable: false
+  block_types:
+    display: 'Tipo Bloques'
+    sections:
+      -
+        display: 'New Section'
+        fields:
+          -
+            handle: block_types
+            field:
+              type: replicator
+              display: 'Tipo Bloques'
+              sets:
+                new_set_group:
+                  display: 'New Set Group'
+                  sets:
+                    perfil_sumi:
+                      display: 'Perfil Sumi'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: imagen_sumi
+                          field:
+                            container: assets
+                            type: assets
+                            display: 'Imagen Sumi'
+                        -
+                          handle: descripcion_perfil
+                          field:
+                            type: textarea
+                            display: 'Descripcion Perfil'
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    video_sumi:
+                      display: 'Video Sumi'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: titulo_video
+                          field:
+                            type: text
+                            display: 'Titulo Video'
+                        -
+                          handle: descripcion_video
+                          field:
+                            type: text
+                            display: 'Descripcion Video'
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    expertise_academica:
+                      display: 'Expertise Academica'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: primer_imagen
+                          field:
+                            container: assets
+                            type: assets
+                            display: 'Primer Imagen'
+                        -
+                          handle: segundo_imagen
+                          field:
+                            container: assets
+                            type: assets
+                            display: 'Segundo Imagen'
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    areas_investigacion:
+                      display: 'Areas Investigacion'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    colegas_academicos:
+                      display: 'Colegas Academicos'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    trayectoria_academica:
+                      display: 'Trayectoria Academica'
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
+                    publicaciones:
+                      display: Publicaciones
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template

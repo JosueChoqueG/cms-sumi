@@ -1,0 +1,25 @@
+/* atua-style-inline-css */
+.dt_pagetitle .parallax-bg:before { opacity: 0.7; background: #000; }
+.dt_slider .dt_slider-wrapper { background-color: rgba(0, 0, 0, 0.6); }
+.front-cta:before { background-color: #000000; opacity: 0.6; }
+.front-cta2:before { background-color: #0e1422; opacity: 0.6; }
+:root { --dt-pri-color: #0f7173; --dt-sec-color: #0f213c; }
+html[data-theme='dark'] { --dt-whi-color: #0f213c; --dt-sec-color: #ffffff; --dt-base-color: #ffffff; }
+.dt-container,.dt__slider-main .owl-dots { max-width: 1252px; }
+.header--eight .dt-container { max-width: calc(1252px + 7.15rem); }
+button[type=submit], button, input[type='button'], input[type='reset'], input[type='submit'], .dt-btn, .button:not(.add_to_cart_button) { border-radius: 100px; }
+body { font-weight: inherit; text-transform: inherit; font-style: inherit; text-decoration: none; }
+h1, h2, h3, h4, h5, h6 { font-family: inherit; font-weight: 700; text-transform: inherit; font-style: inherit; text-decoration: inherit; }
+.dt_footer--one { background-color: #0e1422; }
+
+/* utility styles */
+body * :not(input):not(textarea){user-select:none !important; -webkit-touch-callout: none !important; -webkit-user-select: none !important; -moz-user-select:none !important; -khtml-user-select:none !important; -ms-user-select: none !important;}
+#amm_drcfw_toast_msg{visibility:hidden;min-width:250px;margin-left:-125px;background-color:#333;color:#fff;text-align:center;border-radius:2px;padding:16px;position:fixed;z-index:999;left:50%;bottom:30px;font-size:17px}
+#amm_drcfw_toast_msg.show{visibility:visible;-webkit-animation:fadein .5s,fadeout .5s 2.5s;animation:fadein .5s,fadeout .5s 2.5s}
+@-webkit-keyframes fadein{from{bottom:0;opacity:0}to{bottom:30px;opacity:1}}
+@keyframes fadein{from{bottom:0;opacity:0}to{bottom:30px;opacity:1}}
+@-webkit-keyframes fadeout{from{bottom:30px;opacity:1}to{bottom:0;opacity:0}}
+@keyframes fadeout{from{bottom:30px;opacity:1}to{bottom:0;opacity:0}}
+body .header h4.site-title, body .header p.site-description { color: #161C2D; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+html[data-theme='dark'] .dt_header-widget .widget.widget_social li a { color: var(--dt-whi-color); }
