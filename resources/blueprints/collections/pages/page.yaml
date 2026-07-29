@@ -67,6 +67,15 @@ tabs:
                 new_set_group:
                   display: 'New Set Group'
                   sets:
+                    carrusel:
+                      display: Carrusel
+                      icon: folder-open
+                      fields:
+                        -
+                          handle: template
+                          field:
+                            type: code
+                            display: Template
                     perfil_sumi:
                       display: 'Perfil Sumi'
                       icon: folder-open
