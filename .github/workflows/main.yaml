@@ -1,0 +1,92 @@
+name: Publish Statamic to CPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to cPanel via FTP
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies and build assets
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+
+      - name: Install PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: 'composer'
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Restructure for Shared Hosting (No Document Root Change)
+        run: |
+          mv public/.htaccess .
+          mv public/index.php .
+          mv public/favicon.ico . 2>/dev/null || true
+          mv public/robots.txt . 2>/dev/null || true
+          
+          mv public/build . 2>/dev/null || true
+          mv public/assets . 2>/dev/null || true
+          mv public/css . 2>/dev/null || true
+          mv public/js . 2>/dev/null || true
+          mv public/fonts . 2>/dev/null || true
+          mv public/images . 2>/dev/null || true
+          
+          sed -i "s|__DIR__.'/../|__DIR__.'/|g" index.php
+          rm -rf public/
+
+      - name: Create Unzip Script
+        run: |
+          echo "<?php
+          \$zip = new ZipArchive;
+          if (\$zip->open('deploy.zip') === TRUE) {
+              \$zip->extractTo(__DIR__);
+              \$zip->close();
+              echo 'SUCCESS';
+              unlink('deploy.zip');
+              unlink('unzip.php');
+          } else {
+              echo 'FAILED';
+          }" > unzip.php
+
+      - name: Zip Files for Deployment
+        run: |
+          sudo apt-get update && sudo apt-get install -y zip
+          zip -r deploy.zip . -x ".git/*" ".github/*" "node_modules/*" "tests/*" ".env*" "README.md" "package*.json"
+
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          port: 21
+          server-dir: ./
+          dangerous-clean-html: false
+          exclude: |
+            - **
+            - !deploy.zip
+            - !unzip.php
+
+      - name: Trigger Remote Unzip via HTTP
+        run: |
+          curl -s -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://alfredosumi.com
