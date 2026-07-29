@@ -38,17 +38,24 @@ jobs:
 
       - name: Restructure for Shared Hosting (No Document Root Change)
         run: |
-          # Habilitar la inclusión de archivos ocultos (como .htaccess) en el movimiento
-          shopt -s dotglob nullglob
+          # Mover archivos individuales (evitando vendor/)
+          mv public/.htaccess .
+          mv public/index.php .
+          mv public/favicon.ico . 2>/dev/null || true
+          mv public/robots.txt . 2>/dev/null || true
           
-          # Mover todo el contenido de public/ a la raíz del proyecto
-          mv public/* ./
+          # Mover carpetas de assets si existen
+          mv public/build . 2>/dev/null || true
+          mv public/assets . 2>/dev/null || true
+          mv public/css . 2>/dev/null || true
+          mv public/js . 2>/dev/null || true
+          mv public/fonts . 2>/dev/null || true
+          mv public/images . 2>/dev/null || true
           
-          # Actualizar las rutas en index.php para que apunten a la raíz en lugar de ../
-          # Esto corrige automáticamente las rutas de vendor, bootstrap y storage
+          # Actualizar index.php
           sed -i "s|__DIR__.'/../|__DIR__.'/|g" index.php
           
-          # Eliminar la carpeta public/ original para evitar conflictos o duplicados en el deploy
+          # Eliminar public/ (ya debería estar vacío o casi vacío)
           rm -rf public/
 
       - name: FTP-Deploy-Action
@@ -59,7 +66,7 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           protocol: ftp
           port: 21
-          server-dir: ./ # Ajusta a 'public_html/' si tu FTP aterriza en la carpeta superior
+          server-dir: ./
           timeout: 60000
           exclude: |
             - .git*
