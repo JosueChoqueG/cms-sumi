@@ -1,0 +1,85 @@
+name: Publish Statamic to CPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to cPanel via FTP
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies and build assets
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+
+      - name: Install PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: 'composer'
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Restructure for Shared Hosting (No Document Root Change)
+        run: |
+          # Habilitar la inclusión de archivos ocultos (como .htaccess) en el movimiento
+          shopt -s dotglob nullglob
+          
+          # Mover todo el contenido de public/ a la raíz del proyecto
+          mv public/* ./
+          
+          # Actualizar las rutas en index.php para que apunten a la raíz en lugar de ../
+          # Esto corrige automáticamente las rutas de vendor, bootstrap y storage
+          sed -i "s|__DIR__.'/../|__DIR__.'/|g" index.php
+          
+          # Eliminar la carpeta public/ original para evitar conflictos o duplicados en el deploy
+          rm -rf public/
+
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          port: 21
+          server-dir: ./ # Ajusta a 'public_html/' si tu FTP aterriza en la carpeta superior
+          timeout: 60000
+          exclude: |
+            - .git*
+            - .git/**
+            - node_modules/**
+            - tests/**
+            - .github/**
+            - .env
+            - .env.*
+            - .vscode/**
+            - README.md
+            - composer.json
+            - composer.lock
+            - package.json
+            - package-lock.json
+            - vite.config.js
+            - tailwind.config.js
+            - postcss.config.js
+            - .editorconfig
+            - .gitignore
+            - .env.example
+            - bootstrap/cache/*.php
+            - storage/logs/**
