@@ -13,9 +13,7 @@
 
     RewriteEngine On
 
-    # Redirigir todo el tráfico a la carpeta public de Statamic
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+    # <--- ELIMINÉ LA LÍNEA QUE REDIRIGÍA A /PUBLIC AQUÍ --->
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
