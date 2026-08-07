@@ -52,7 +52,7 @@ block_types:
                     </div>
                 </div>
                 <div class="dt_slider-item">
-                    <img src="images/banner/banner-2.jpg" alt="Rijcharismo" />
+                    <img src="assets/banner/banner-2.jpg" alt="Rijcharismo" />
                     <div class="dt_slider-wrapper">
                         <div class="dt_slider-inner">
                             <div class="dt_slider-innercell">
@@ -86,7 +86,7 @@ block_types:
                     </div>
                 </div>
                 <div class="dt_slider-item">
-                    <img src="images/banner/banner-3.jpg" alt="La Huaylia" />
+                    <img src="assets/banner/banner-3.jpg" alt="La Huaylia" />
                     <div class="dt_slider-wrapper">
                         <div class="dt_slider-inner">
                             <div class="dt_slider-innercell">
@@ -251,7 +251,7 @@ block_types:
                                         ></div>
                                     </div>
                                     <figure class="image image-1">
-                                        <img src="assets/images/uploads/sumi.png" alt="Alfredo Sumi Arapa" />
+                                        <img src="assets/uploads/sumi.png" alt="Alfredo Sumi Arapa" />
                                     </figure>
                                     <div
                                         class="video-inner"
@@ -1133,7 +1133,7 @@ block_types:
     type: publicaciones
     enabled: true
 updated_by: 0eb7b6e0-a2bf-4f61-b756-fff68d346d58
-updated_at: 1786068000
+updated_at: 1786069345
 ---
 ## Welcome to your brand new Statamic site!
 
